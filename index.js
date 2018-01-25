@@ -1,29 +1,34 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const cookieSession = require('cookie-session');
 const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const keys = require('./config/keys.js');
-const app = express();  // this is the part that talks to Node, takes a request
-                        // and sends the request to the appropriate handler.
+const keys = require('./config/keys');
+// because the passport.js file isn't exporting or returning anything,
+// we can remove the const passportConfig part, and just require the
+// entire file.
+//const passportConfig = require('./services/passport.js');
+require('./models/user');
+require('./services/passport'); // because passport uses the user model, we need to
+// require this AFTER we require the user model.
 
-passport.use(new GoogleStrategy({
-    clientID: keys.googleClientID,
-    clientSecret: keys.googleClientSecret,
-    callbackURL: '/auth/google/callback'
-}, (accessToken) => {
-    console.log(accessToken);
-}));
+mongoose.connect(keys.mongoURI);
 
-/*
-app.get('/', (req, res) => {    // this is the route handler for address '/'
-    res.send({it: 'things to do' });   // req & res are JS objects
-});
-*/
-// NOTE: the 'google' variable sent to passport.authenticate is hard coded
-// to tell passport.use to use the google version of authenticate.
-// in scope: we could list other things to access from Google
-app.get('/auth/google', passport.authenticate('google', {
-    scope: ['profile', 'email']
-}));
+const app = express(); // this is the part that talks to Node, takes a request
+// and sends the request to the appropriate handler.
 
-const PORT = process.env.PORT || 5000;  // Heroku should define the port at runtime
+// must be after app?
+// uses cookiesession to do this.. age is in milliseconds (set to 30 days)
+// keys array allows us to use multiple keys, picking anyone from an array
+// just for more security
+app.use(
+  cookieSession({
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    keys: [keys.cookieKey],
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+
+require('./routes/authRoutes')(app); // call the authRoutes file with a variable
+const PORT = process.env.PORT || 5000; // Heroku should define the port at runtime
 app.listen(PORT);
