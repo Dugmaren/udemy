@@ -1,6 +1,8 @@
 // process.env.NODE_ENV is autoset to 'production'
 // by the packages
 
+// NOTE - These keys are for SERVER SIDE only!!!
+
 if(process.env.NODE_ENV === 'production') {
     // we're in production, return prod keys
     module.exports = require('./prod');

@@ -1,0 +1,13 @@
+// CONVENTION
+// if you call this file index.js, we can import the entire
+// reducers diretory which by convention will give you any
+// included file called index.js
+
+import { combineReducers } from 'redux';
+import authReducer from './authReducer';
+
+// Whatever keys we pass in, will represent the keys in
+// the state object.
+export default combineReducers({
+    auth: authReducer
+});
