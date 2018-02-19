@@ -38,5 +38,29 @@ app.use(passport.session());
 require('./routes/authRoutes')(app); // call the authRoutes file with a variable
 require('./routes/billingRoutes')(app);
 
+// In production, we only have
+//  1. server API
+//  2. assets (main.js, main.css)
+//  3. index.html (which catches everything else)
+//
+// But production doesn't know any of the paths really, so if the
+// browser isn't asking for a specific asset, or a server API call
+// then we want to send back index.html
+if(process.env.NODE_ENV === 'production') {
+  // #2 - find assets
+  // Express will serve up production assets like main.js / main.css
+  // so if we can't find this on the server, try looking in client/build
+  // first, this is where the assets are stored.
+  app.use(express.static('client/build'));
+
+  // #3 - haven't found it yet, send index.html for
+  //      all other ('*') requests
+  // Return index.html if you can't find the right file/path.
+  const path = require('path');
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  });
+}
+
 const PORT = process.env.PORT || 5000; // Heroku should define the port at runtime
 app.listen(PORT);
