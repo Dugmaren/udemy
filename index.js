@@ -5,11 +5,15 @@ const passport = require('passport');
 const bodyParser = require('body-parser'); // This is express middlewhere
     // so need to use the app.use() function to wire it up
 const keys = require('./config/keys');
+
+// Need to include these somewhere (anywhere?) in the project
+require('./models/User');
+require('./models/Survey');
+
 // because the passport.js file isn't exporting or returning anything,
 // we can remove the const passportConfig part, and just require the
 // entire file.
 //const passportConfig = require('./services/passport.js');
-require('./models/user');
 require('./services/passport'); // because passport uses the user model, we need to
 // require this AFTER we require the user model.
 
@@ -37,6 +41,7 @@ app.use(passport.session());
 
 require('./routes/authRoutes')(app); // call the authRoutes file with a variable
 require('./routes/billingRoutes')(app);
+require('./routes/surveyRoutes')(app);
 
 // In production, we only have
 //  1. server API

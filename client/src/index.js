@@ -11,6 +11,11 @@ import reduxThunk from 'redux-thunk';
 import App from './components/App';
 import reducers from './reducers';
 
+// TESTING CODE //
+import axios from 'axios';
+window.axios = axios;
+// TESTING CODE //
+
 //const store = createStore(() => [], {}, applyMiddleware()); // place holder
 const store = createStore(reducers, {}, applyMiddleware(reduxThunk));
 

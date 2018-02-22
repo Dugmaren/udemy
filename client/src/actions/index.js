@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {FETCH_USER} from './types';
+import {FETCH_USER, FETCH_SURVEYS} from './types';
 
 // Because we're returning a function, we don't have to
 // immediately return an action #thunk
@@ -28,3 +28,22 @@ export const handleToken = token => async dispatch => {
 
   dispatch({type: FETCH_USER, payload: res.data});
 };
+
+export const submitSurvey = (values, history) => async dispatch => {
+  const res = await axios.post('/api/surveys', values);
+
+  // Redirect is tricky as you need to give back the history
+  // object from the form, from the connect call etc.
+  history.push('/surveys');
+
+  // This catches the response from surveyRoutes that sends
+  // back res.send(user) with the intention of updating the
+  // header's view of current credits.
+  dispatch({type: FETCH_USER, payload: res.data});
+};
+
+export const fetchSurveys = () => async dispatch => {
+  const res = await axios.get('/api/surveys');
+
+  dispatch({ type: FETCH_SURVEYS, payload: res.data });
+}

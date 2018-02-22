@@ -20,8 +20,8 @@ import * as actions from '../actions';
 // Dummy Components
 import Header from './Header';
 import Landing from './Landing';
-const Dashboard = () => <h2>Dashboard</h2>;
-const SurveyNew = () => <h2>SurveyNew</h2>;
+import Dashboard from './Dashboard';
+import SurveyNew from './surveys/SurveyNew';
 
 // BrowserRouter expects ONLY one child
 // Route path="/" never specify domain name in here.. just the
@@ -38,7 +38,7 @@ class App extends Component {
     return (
       <div className="container">
         <BrowserRouter>
-          <div>
+          <div className="container">
             <Header />
 
             <Route exact path="/" component={Landing} />
